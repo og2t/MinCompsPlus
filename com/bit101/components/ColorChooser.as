@@ -47,8 +47,8 @@ package com.bit101.components
 	
 	public class ColorChooser extends Component
 	{
-		private var _input:InputText;
-		private var _swatch:Sprite;
+		protected var _input:InputText;
+		protected var _swatch:Sprite;
 		private var _value:uint = 0xff0000;
 
 		public static const TOP:String = "top";
@@ -57,8 +57,8 @@ package com.bit101.components
 		private var _usePopup:Boolean = false;
 		private var _model:DisplayObject;
 		private var _defaultModelColors:Array=[0xFF0000, 0xFFFF00, 0x00FF00, 0x00FFFF, 0x0000FF, 0xFF00FF, 0xFF0000,0xFFFFFF,0x000000];
-		private var _colors:BitmapData;
-		private var _colorsContainer:Sprite;
+		protected var _colors:BitmapData;
+		protected var _colorsContainer:Sprite;
 		private var _popupAlign:String = BOTTOM;
 		private var _tmpColorChoice:uint = _value;
 		private var _oldColorChoice:uint = _value;

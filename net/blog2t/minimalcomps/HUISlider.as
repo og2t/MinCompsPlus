@@ -1,7 +1,6 @@
 /**
  * HUISlider.as
  * Keith Peters
- * version 0.101
  * 
  * A Horizontal slider with a label and a value label.
  * 
@@ -26,14 +25,14 @@
  * THE SOFTWARE.
  */
  
-package com.bit101.components
+package net.blog2t.minimalcomps
 {
 	import flash.display.DisplayObjectContainer;
-	import flash.events.Event;
+	import net.blog2t.minimalcomps.UISlider;
+	import com.bit101.components.HSlider;
 
-	public class HUISlider extends UISlider
+	public class HUISlider extends net.blog2t.minimalcomps.UISlider
 	{
-		
 		/**
 		 * Constructor
 		 * @param parent The parent DisplayObjectContainer on which to add this HUISlider.
@@ -65,13 +64,6 @@ package com.bit101.components
 			_valueLabel.x = _slider.x + _slider.width + 5;
 		}
 		
-		
-		
-		
-		///////////////////////////////////
-		// public methods
-		///////////////////////////////////
-		
 		/**
 		 * Draws the visual ui of this component.
 		 */
@@ -81,17 +73,7 @@ package com.bit101.components
 			_slider.x = _label.width + 5;
 			_slider.y = height / 2 - _slider.height / 2;
 			_slider.width = width - _label.width - 50 - 10;
-			
 			_valueLabel.x = _slider.x + _slider.width + 5;
 		}
-		
-		///////////////////////////////////
-		// event handlers
-		///////////////////////////////////
-		
-		///////////////////////////////////
-		// getter/setters
-		///////////////////////////////////
-		
 	}
 }
