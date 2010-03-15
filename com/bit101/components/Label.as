@@ -37,7 +37,7 @@ package com.bit101.components
 	{
 		private var _autoSize:Boolean = true;
 		private var _text:String = "";
-		private var _tf:TextField;
+		protected var _tf:TextField;
 		
 		/**
 		 * Constructor

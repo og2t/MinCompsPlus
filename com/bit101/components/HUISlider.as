@@ -44,7 +44,6 @@ package com.bit101.components
 		 */
 		public function HUISlider(parent:DisplayObjectContainer = null, x:Number = 0, y:Number = 0, label:String = "", defaultEventHandler:Function = null)
 		{
-			_sliderClass = HSlider;
 			super(parent, x, y, label, defaultEventHandler);
 		}
 		

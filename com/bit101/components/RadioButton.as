@@ -36,11 +36,11 @@ package com.bit101.components
 	public class RadioButton extends Component
 	{
 		private var _back:Sprite;
-		private var _button:Sprite;
+		protected var _button:Sprite;
 		private var _selected:Boolean = false;
 		private var _label:Label;
 		private var _labelText:String = "";
-		private var _groupName:String = "defaultRadioGroup";
+		protected var _groupName:String = "defaultRadioGroup";
 		
 		private static var buttons:Array;
 		

@@ -36,7 +36,7 @@ package com.bit101.components
 		protected var _label:Label;
 		protected var _valueLabel:Label;
 		protected var _slider:Slider;
-		private var _precision:int = 1;
+		protected var _precision:int = 1;
 		protected var _sliderClass:Class;
 		private var _labelText:String;
 		private var _tick:Number = 1;
