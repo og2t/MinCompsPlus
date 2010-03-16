@@ -85,6 +85,7 @@ package net.blog2t.minimalcomps
 		{
 			_displayHex = state;
 		}
+		
 		public function get displayHex():Boolean
 		{
 			return _displayHex;

@@ -17,6 +17,8 @@ package
 		private var myHSlider:HSlider;
 		private var myProgressBar:ProgressBar;
 		
+		private var myHUISimpleSlider:HUISimpleSlider;
+		
 		private var myRadioButton1:RadioButton;
 		private var myRadioButton2:RadioButton;
 		private var myRadioButton3:RadioButton;
@@ -42,6 +44,9 @@ package
 			myHSlider = new HSlider(this, 130, 200);
 			myProgressBar = new ProgressBar(this, 130, 250);
 			myProgressBar.value = 0.5;
+			
+			myHUISimpleSlider = new HUISimpleSlider(this, 130, 270, "HUISimpleSlider");
+			myHUISimpleSlider.displayHex = true;
 			
 			panel1 = new Panel(this, 300, 100);
 			panel2 = new Panel(this, 420, 100);

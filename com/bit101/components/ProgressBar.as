@@ -33,10 +33,10 @@ package com.bit101.components
 	
 	public class ProgressBar extends Component
 	{
-		private var _back:Sprite;
-		private var _bar:Sprite;
-		private var _value:Number = 0;
-		private var _max:Number = 1;
+		protected var _back:Sprite;
+		protected var _bar:Sprite;
+		protected var _value:Number = 0;
+		protected var _max:Number = 1;
 
 		/**
 		 * Constructor

@@ -57,6 +57,15 @@ package net.blog2t.minimalcomps
 		}
 		
 		/**
+		 * Creates and adds the child display objects of this component.
+		 */
+		override protected function addChildren():void
+		{
+			super.addChildren();
+			_slider.setSize(0, 10);
+		}
+		
+		/**
 		 * Centers the label when label text is changed.
 		 */
 		override protected function positionLabel():void
