@@ -1,7 +1,7 @@
 /**
  * UISlider.as
  * Keith Peters
- * version 0.101
+ * version 0.102
  * 
  * A Slider with a label and value label. Abstract base class for VUISlider and HUISlider
  * 
@@ -36,6 +36,7 @@ package com.bit101.components
 		protected var _label:Label;
 		protected var _valueLabel:Label;
 		protected var _slider:Slider;
+		// Og2t: _precision changed to protected
 		protected var _precision:int = 1;
 		protected var _sliderClass:Class;
 		private var _labelText:String;

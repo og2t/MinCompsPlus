@@ -1,7 +1,7 @@
 /**
  * RadioButton.as
  * Keith Peters
- * version 0.101
+ * version 0.102
  * 
  * A basic radio button component, meant to be used in groups, where only one button in the group can be selected.
  * Currently only one group can be created.
@@ -36,10 +36,11 @@ package com.bit101.components
 	public class RadioButton extends Component
 	{
 		private var _back:Sprite;
+		// Og2t: _button, _groupName changed to protected
 		protected var _button:Sprite;
 		private var _selected:Boolean = false;
 		private var _label:Label;
-		private var _labelText:String = "";
+		private var _labelText:String = "";		
 		protected var _groupName:String = "defaultRadioGroup";
 		
 		private static var buttons:Array;

@@ -1,7 +1,7 @@
 /**
  * Accordion.as
  * Keith Peters
- * version 0.101
+ * version 0.102
  * 
  * Essentially a VBox full of Windows. Only one Window will be expanded at any time.
  * 

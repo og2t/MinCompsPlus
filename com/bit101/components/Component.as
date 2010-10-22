@@ -1,7 +1,7 @@
 /**
  * Component.as
  * Keith Peters
- * version 0.101
+ * version 0.102
  * 
  * Base class for all components
  * 
@@ -43,12 +43,20 @@ package com.bit101.components
 
 	public class Component extends Sprite
 	{
-		[Embed(source="/assets/pf_ronda_seven.ttf", fontName="PF Ronda Seven", mimeType="application/x-font")]
+		// Og2t:
+		// NOTE: Flex 4 introduces DefineFont4, which is used by default and does not work in native text fields.
+		// Use the embedAsCFF="false" param to switch back to DefineFont4. In earlier Flex 4 SDKs this was cff="false".
+		// So if you are using the Flex 3.x sdk compiler, switch the embed statment below to expose the correct version.
+
+		// Flex 4.x sdk:
+		[Embed(source="/assets/pf_ronda_seven.ttf", embedAsCFF="false", fontName="PF Ronda Seven", mimeType="application/x-font")]
+		/*[Embed(source="/assets/pf_ronda_seven.ttf", fontName="PF Ronda Seven", mimeType="application/x-font")]*/
 		private var Ronda:Class;
 		
 		protected var _width:Number = 0;
 		protected var _height:Number = 0;
 		protected var _tag:int = -1;
+		protected var _enabled:Boolean = true;
 		
 		public static const DRAW:String = "draw";
 
@@ -229,5 +237,20 @@ package com.bit101.components
 		{
 			super.y = Math.round(value);
 		}
+
+		/**
+		 * Sets/gets whether this component is enabled or not.
+		 */
+		public function set enabled(value:Boolean):void
+		{
+			_enabled = value;
+			mouseEnabled = mouseChildren = _enabled;
+			alpha = _enabled ? 1.0 : 0.5;
+		}
+		public function get enabled():Boolean
+		{
+			return _enabled;
+		}
+
 	}
 }

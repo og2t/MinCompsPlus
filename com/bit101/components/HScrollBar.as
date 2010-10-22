@@ -1,7 +1,7 @@
 /**
  * HScrollBar.as
  * Keith Peters
- * version 0.101
+ * version 0.102
  * 
  * A horizontal scroll bar for use in other components. 
  * 
@@ -39,7 +39,7 @@ package com.bit101.components
 	 */
 	public class HScrollBar extends ScrollBar
 	{
-		public function HScrollBar(orientation:String, parent:DisplayObjectContainer=null, xpos:Number=0, ypos:Number=0, defaultHandler:Function=null)
+		public function HScrollBar(parent:DisplayObjectContainer=null, xpos:Number=0, ypos:Number=0, defaultHandler:Function=null)
 		{
 			super(Slider.HORIZONTAL, parent, xpos, ypos, defaultHandler);
 		}

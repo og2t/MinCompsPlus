@@ -1,7 +1,7 @@
 /**
  * FPSMeter.as
  * Keith Peters
- * version 0.101
+ * version 0.102
  * 
  * An simple component showing the frames per second the current movie is running at.
  * 

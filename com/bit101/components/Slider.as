@@ -1,7 +1,7 @@
 /**
  * Slider.as
  * Keith Peters
- * version 0.101
+ * version 0.102
  * 
  * Abstract base slider class for HSlider and VSlider.
  * 
@@ -38,7 +38,7 @@ package com.bit101.components
 	{
 		protected var _handle:Sprite;
 		private var _back:Sprite;
-		private var _backClick:Boolean = false;
+		private var _backClick:Boolean = true;
 		protected var _value:Number = 0;
 		protected var _max:Number = 100;
 		protected var _min:Number = 0;

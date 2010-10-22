@@ -1,7 +1,7 @@
 /**
  * ScrollBar.as
  * Keith Peters
- * version 0.101
+ * version 0.102
  * 
  * Base class for HScrollBar and VScrollBar
  * 
@@ -49,8 +49,8 @@ package com.bit101.components
 		 */
 		public function ScrollBar(orientation:String, parent:DisplayObjectContainer=null, xpos:Number=0, ypos:Number=0, defaultHandler:Function = null)
 		{
-			super(parent, xpos, ypos);
 			_orientation = orientation;
+			super(parent, xpos, ypos);
 			if(defaultHandler != null)
 			{
 				addEventListener(Event.CHANGE, defaultHandler);
@@ -69,6 +69,18 @@ package com.bit101.components
 			_downButton.setSize(10, 10);
 		}
 		
+		protected override function init():void
+		{
+			super.init();
+			if(_orientation == Slider.HORIZONTAL)
+			{
+				setSize(100, 10);
+			}
+			else
+			{
+				setSize(10, 100);
+			}
+		}
 		
 		
 		
@@ -101,8 +113,24 @@ package com.bit101.components
 		override public function draw():void
 		{
 			super.draw();
-			_scrollSlider.height = _height - 20;
-			_downButton.y = _height - 10;
+			if(_orientation == Slider.VERTICAL)
+			{
+				_scrollSlider.x = 0;
+				_scrollSlider.y = 10;
+				_scrollSlider.width = 10;
+				_scrollSlider.height = _height - 20;
+				_downButton.x = 0;
+				_downButton.y = _height - 10;
+			}
+			else
+			{
+				_scrollSlider.x = 10;
+				_scrollSlider.y = 0;
+				_scrollSlider.width = _width - 20;
+				_scrollSlider.height = _height;
+				_downButton.x = _width - 10;
+				_downButton.y = 0;
+			}
 		}
 
 		

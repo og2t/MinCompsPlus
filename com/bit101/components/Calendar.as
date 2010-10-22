@@ -1,7 +1,7 @@
 /**
  * Component.as
  * Keith Peters
- * version 0.101
+ * version 0.102
  * 
  * Calendar component for showing and selecting a date.
  * 
@@ -197,13 +197,13 @@ package com.bit101.components
 		 */
 		protected function onNextMonth(event:MouseEvent):void
 		{
-			_day = 1;
 			_month++;
 			if(_month > 11)
 			{
 				_month = 0;
 				_year++;
 			}
+			_day = Math.min(_day,getEndDay(_month,_year));
 			setYearMonthDay(_year, _month, _day);
 		}
 		
@@ -212,13 +212,13 @@ package com.bit101.components
 		 */
 		protected function onPrevMonth(event:MouseEvent):void
 		{
-			_day = 1;
 			_month--;
 			if(_month < 0)
 			{
 				_month = 11;
 				_year--;
 			}
+			_day = Math.min(_day,getEndDay(_month,_year));
 			setYearMonthDay(_year, _month, _day);
 		}
 		
@@ -227,8 +227,8 @@ package com.bit101.components
 		 */
 		protected function onNextYear(event:MouseEvent):void
 		{
-			_day = 1;
 			_year++;
+			_day = Math.min(_day,getEndDay(_month,_year));
 			setYearMonthDay(_year, _month, _day);
 		}
 		
@@ -237,8 +237,8 @@ package com.bit101.components
 		 */
 		protected function onPrevYear(event:MouseEvent):void
 		{
-			_day = 1;
 			_year--;
+			_day = Math.min(_day,getEndDay(_month,_year));
 			setYearMonthDay(_year, _month, _day);
 		}
 		

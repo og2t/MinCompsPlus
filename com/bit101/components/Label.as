@@ -1,7 +1,7 @@
 /**
  * Label.as
  * Keith Peters
- * version 0.101
+ * version 0.102
  * 
  * A Label component for displaying a single line of text.
  * 
@@ -37,6 +37,7 @@ package com.bit101.components
 	{
 		private var _autoSize:Boolean = true;
 		private var _text:String = "";
+		// Og2t: _tf changed to protected
 		protected var _tf:TextField;
 		
 		/**

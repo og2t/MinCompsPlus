@@ -1,7 +1,7 @@
 /**
  * ColorChooser.as
  * Keith Peters
- * version 0.101
+ * version 0.102
  * 
  * A Color Chooser component, allowing textual input, a default gradient, or custom image.
  * 
@@ -40,6 +40,7 @@ package com.bit101.components
 	import flash.display.InterpolationMethod;
 	import flash.display.SpreadMethod;
 	import flash.display.Sprite;
+	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Matrix;
@@ -47,21 +48,21 @@ package com.bit101.components
 	
 	public class ColorChooser extends Component
 	{
-		protected var _input:InputText;
-		protected var _swatch:Sprite;
-		private var _value:uint = 0xff0000;
-
 		public static const TOP:String = "top";
 		public static const BOTTOM:String = "bottom";
 		
-		private var _usePopup:Boolean = false;
-		private var _model:DisplayObject;
+		private var _colors:BitmapData;
+		private var _colorsContainer:Sprite;
 		private var _defaultModelColors:Array=[0xFF0000, 0xFFFF00, 0x00FF00, 0x00FFFF, 0x0000FF, 0xFF00FF, 0xFF0000,0xFFFFFF,0x000000];
-		protected var _colors:BitmapData;
-		protected var _colorsContainer:Sprite;
-		private var _popupAlign:String = BOTTOM;
-		private var _tmpColorChoice:uint = _value;
+		private var _input:InputText;
+		private var _model:DisplayObject;
 		private var _oldColorChoice:uint = _value;
+		private var _popupAlign:String = BOTTOM;
+		private var _stage:Stage;
+		private var _swatch:Sprite;
+		private var _tmpColorChoice:uint = _value;
+		private var _usePopup:Boolean = false;
+		private var _value:uint = 0xff0000;
 		
 		
 		/**
@@ -75,8 +76,7 @@ package com.bit101.components
 		
 		public function ColorChooser(parent:DisplayObjectContainer = null, xpos:Number = 0, ypos:Number =  0, value:uint = 0xff0000, defaultHandler:Function = null)
 		{
-			_value = value;		
-			_oldColorChoice = _tmpColorChoice = _value;
+			_oldColorChoice = _tmpColorChoice = _value = value;
 			
 			super(parent, xpos, ypos);
 			
@@ -238,11 +238,12 @@ package com.bit101.components
 		 */
 		
 		private function onColorsRemovedFromStage(e:Event):void {
-			stage.removeEventListener(MouseEvent.CLICK, onStageClick);
+			_stage.removeEventListener(MouseEvent.CLICK, onStageClick);
 		}
 		
 		private function onColorsAddedToStage(e:Event):void {
-			stage.addEventListener(MouseEvent.CLICK, onStageClick);
+			_stage = stage;
+			_stage.addEventListener(MouseEvent.CLICK, onStageClick);
 		}
 		
 		private function onStageClick(e:MouseEvent):void {

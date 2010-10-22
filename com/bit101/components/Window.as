@@ -1,7 +1,7 @@
 /**
  * Window.as
  * Keith Peters
- * version 0.101
+ * version 0.102
  * 
  * A draggable window. Can be used as a container for other components.
  * 

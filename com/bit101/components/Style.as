@@ -1,7 +1,7 @@
 /**
  * Style.as
  * Keith Peters
- * version 0.101
+ * version 0.102
  * 
  * A collection of style variables used by the components.
  * If you want to customize the colors of your components, change these values BEFORE instantiating any components.
