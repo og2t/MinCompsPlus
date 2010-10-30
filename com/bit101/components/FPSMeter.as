@@ -35,11 +35,11 @@
 	
 	public class FPSMeter extends Component
 	{
-		private var _label:Label;
-		private var _startTime:int;
-		private var _frames:int;
-		private var _prefix:String = "";
-		private var _fps:int;
+		protected var _label:Label;
+		protected var _startTime:int;
+		protected var _frames:int;
+		protected var _prefix:String = "";
+		protected var _fps:int = 0;
 		
 		/**
 		 * Constructor
@@ -53,14 +53,26 @@
 		{
 			super(parent, xpos, ypos);
 			_prefix = prefix;
-			_label = new Label(this, 0, 0);
 			_frames = 0;
 			_startTime = getTimer();
+			setSize(50, 20);
 			if(stage != null)
 			{
 				addEventListener(Event.ENTER_FRAME, onEnterFrame);
 			}
 			addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
+		}
+		
+		protected override function addChildren():void
+		{
+			super.addChildren();
+			_label = new Label(this, 0, 0);
+		}
+		
+		
+		public override function draw():void
+		{
+			_label.text = _prefix + _fps.toString();
 		}
 		
 		/**
@@ -79,9 +91,9 @@
 			if(elapsed >= 1000)
 			{
 				_fps = Math.round(_frames * 1000 / elapsed);
-				_label.text = _prefix + _fps.toString();
 				_frames = 0;
 				_startTime = time;
+				draw();
 			}
 		}
 		

@@ -38,5 +38,9 @@ package com.bit101.components
 		public static var DROPSHADOW:uint = 0x000000;
 		public static var PANEL:uint = 0xF3F3F3;
 		public static var PROGRESS_BAR:uint = 0xFFFFFF;
+		
+		public static var embedFonts:Boolean = true;
+		public static var fontName:String = "PF Ronda Seven";
+		public static var fontSize:Number = 8;
 	}
 }

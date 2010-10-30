@@ -53,7 +53,7 @@ package com.bit101.components
 		 */
 		public function Text(parent:DisplayObjectContainer = null, xpos:Number = 0, ypos:Number =  0, text:String = "")
 		{
-			_text = text;
+			this.text = text;
 			super(parent, xpos, ypos);
 			setSize(200, 100);
 		}
@@ -78,12 +78,12 @@ package com.bit101.components
 			_tf.x = 2;
 			_tf.y = 2;
 			_tf.height = _height;
-			_tf.embedFonts = true;
+			_tf.embedFonts = Style.embedFonts;
 			_tf.multiline = true;
 			_tf.wordWrap = true;
 			_tf.selectable = true;
 			_tf.type = TextFieldType.INPUT;
-			_tf.defaultTextFormat = new TextFormat("PF Ronda Seven", 8, Style.LABEL_TEXT);
+			_tf.defaultTextFormat = new TextFormat(Style.fontName, Style.fontSize, Style.LABEL_TEXT);
 			_tf.addEventListener(Event.CHANGE, onChange);			
 			addChild(_tf);
 		}
@@ -103,6 +103,7 @@ package com.bit101.components
 			super.draw();
 			
 			_panel.setSize(_width, _height);
+			_panel.draw();
 			
 			_tf.width = _width - 4;
 			_tf.height = _height - 4;
@@ -154,6 +155,7 @@ package com.bit101.components
 		public function set text(t:String):void
 		{
 			_text = t;
+			if(_text == null) _text = "";
 			invalidate();
 		}
 		public function get text():String
@@ -207,5 +209,15 @@ package com.bit101.components
 		{
 			return _html;
 		}
+
+        /**
+         * Sets/gets whether this component is enabled or not.
+         */
+        public override function set enabled(value:Boolean):void
+        {
+            super.enabled = value;
+            _tf.tabEnabled = value;
+        }
+
 	}
 }

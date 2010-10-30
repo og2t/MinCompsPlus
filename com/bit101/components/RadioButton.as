@@ -35,15 +35,14 @@ package com.bit101.components
 	
 	public class RadioButton extends Component
 	{
-		private var _back:Sprite;
-		// Og2t: _button, _groupName changed to protected
+		protected var _back:Sprite;
 		protected var _button:Sprite;
-		private var _selected:Boolean = false;
-		private var _label:Label;
-		private var _labelText:String = "";		
+		protected var _selected:Boolean = false;
+		protected var _label:Label;
+		protected var _labelText:String = "";
 		protected var _groupName:String = "defaultRadioGroup";
 		
-		private static var buttons:Array;
+		protected static var buttons:Array;
 		
 		
 		/**
@@ -70,7 +69,7 @@ package com.bit101.components
 		 * Static method to add the newly created RadioButton to the list of buttons in the group.
 		 * @param rb The RadioButton to add.
 		 */
-		private static function addButton(rb:RadioButton):void
+		protected static function addButton(rb:RadioButton):void
 		{
 			if(buttons == null)
 			{
@@ -84,7 +83,7 @@ package com.bit101.components
 		 * This could use some rethinking or better naming.
 		 * @param rb The RadioButton to remain selected.
 		 */
-		private static function clear(rb:RadioButton):void
+		protected static function clear(rb:RadioButton):void
 		{
 			for(var i:uint = 0; i < buttons.length; i++)
 			{

@@ -29,22 +29,26 @@
 package com.bit101.components
 {
 	import flash.display.DisplayObjectContainer;
+	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 
 	public class Window extends Component
 	{
-		private var _title:String;
-		private var _titleBar:Panel;
-		private var _titleLabel:Label;
-		private var _panel:Panel;
-		private var _color:int = -1;
-		private var _shadow:Boolean = true;
-		private var _draggable:Boolean = true;
-		private var _minimizeButton:Sprite;
-		private var _hasMinimizeButton:Boolean = false;
-		private var _minimized:Boolean = false;
+		protected var _title:String;
+		protected var _titleBar:Panel;
+		protected var _titleLabel:Label;
+		protected var _panel:Panel;
+		protected var _color:int = -1;
+		protected var _shadow:Boolean = true;
+		protected var _draggable:Boolean = true;
+		protected var _minimizeButton:Sprite;
+		protected var _hasMinimizeButton:Boolean = false;
+		protected var _minimized:Boolean = false;
+		protected var _hasCloseButton:Boolean;
+		protected var _closeButton:PushButton;
+		protected var _grips:Shape;
 		
 		
 		/**
@@ -75,11 +79,25 @@ package com.bit101.components
 		override protected function addChildren():void
 		{
 			_titleBar = new Panel(this);
+			_titleBar.filters = [];
 			_titleBar.buttonMode = true;
 			_titleBar.useHandCursor = true;
-			_titleBar.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+			_titleBar.addEventListener(MouseEvent.MOUSE_DOWN, onMouseGoDown);
 			_titleBar.height = 20;
 			_titleLabel = new Label(_titleBar.content, 5, 1, _title);
+			
+			_grips = new Shape();
+			for(var i:int = 0; i < 4; i++)
+			{
+				_grips.graphics.lineStyle(1, 0xffffff, .55);
+				_grips.graphics.moveTo(0, 3 + i * 4);
+				_grips.graphics.lineTo(100, 3 + i * 4);
+				_grips.graphics.lineStyle(1, 0, .125);
+				_grips.graphics.moveTo(0, 4 + i * 4);
+				_grips.graphics.lineTo(100, 4 + i * 4);
+			}
+			_titleBar.content.addChild(_grips);
+			_grips.visible = false;
 			
 			_panel = new Panel(this, 0, 20);
 			_panel.visible = !_minimized;
@@ -100,6 +118,9 @@ package com.bit101.components
 			_minimizeButton.buttonMode = true;
 			_minimizeButton.addEventListener(MouseEvent.CLICK, onMinimize);
 			
+			_closeButton = new PushButton(null, 86, 6, "", onClose);
+			_closeButton.setSize(8, 8);
+			
 			filters = [getShadow(4, false)];
 		}
 		
@@ -119,8 +140,20 @@ package com.bit101.components
 			_titleBar.color = _color;
 			_panel.color = _color;
 			_titleBar.width = width;
+			_titleBar.draw();
 			_titleLabel.x = _hasMinimizeButton ? 20 : 5;
+			_closeButton.x = _width - 14;
+			_grips.x = _titleLabel.x + _titleLabel.width;
+			if(_hasCloseButton)
+			{
+				_grips.width = _closeButton.x - _grips.x - 2;
+			}
+			else
+			{
+				_grips.width = _width - _grips.x - 2;
+			}
 			_panel.setSize(_width, _height - 20);
+			_panel.draw();
 		}
 
 
@@ -132,26 +165,35 @@ package com.bit101.components
 		 * Internal mouseDown handler. Starts a drag.
 		 * @param event The MouseEvent passed by the system.
 		 */
-		protected function onMouseDown(event:MouseEvent):void
+		protected function onMouseGoDown(event:MouseEvent):void
 		{
-			this.startDrag();
-			stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
-			parent.addChild(this);
+			if(_draggable)
+			{
+				this.startDrag();
+				stage.addEventListener(MouseEvent.MOUSE_UP, onMouseGoUp);
+				parent.addChild(this); // move to top
+			}
+			dispatchEvent(new Event(Event.SELECT));
 		}
 		
 		/**
 		 * Internal mouseUp handler. Stops the drag.
 		 * @param event The MouseEvent passed by the system.
 		 */
-		protected function onMouseUp(event:MouseEvent):void
+		protected function onMouseGoUp(event:MouseEvent):void
 		{
 			this.stopDrag();
-			stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+			stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseGoUp);
 		}
 		
 		protected function onMinimize(event:MouseEvent):void
 		{
 			minimized = !minimized;
+		}
+		
+		protected function onClose(event:MouseEvent):void
+		{
+			dispatchEvent(new Event(Event.CLOSE));
 		}
 		
 		///////////////////////////////////
@@ -220,14 +262,6 @@ package com.bit101.components
 			_draggable = b;
 			_titleBar.buttonMode = _draggable;
 			_titleBar.useHandCursor = _draggable;
-			if(_draggable)
-			{
-				_titleBar.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-			}
-			else
-			{
-				_titleBar.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-			}
 		}
 		public function get draggable():Boolean
 		{
@@ -261,13 +295,15 @@ package com.bit101.components
 		public function set minimized(value:Boolean):void
 		{
 			_minimized = value;
-			_panel.visible = !_minimized;
+//			_panel.visible = !_minimized;
 			if(_minimized)
 			{
+				if(contains(_panel)) removeChild(_panel);
 				_minimizeButton.rotation = -90;
 			}
 			else
 			{
+				if(!contains(_panel)) addChild(_panel);
 				_minimizeButton.rotation = 0;
 			}
 			dispatchEvent(new Event(Event.RESIZE));
@@ -282,7 +318,7 @@ package com.bit101.components
 		 */
 		override public function get height():Number
 		{
-			if(_panel.visible)
+			if(contains(_panel))
 			{
 				return super.height;
 			}
@@ -291,5 +327,49 @@ package com.bit101.components
 				return 20;
 			}
 		}
+
+		/**
+		 * Sets / gets whether or not the window will display a close button.
+		 * Close button merely dispatches a CLOSE event when clicked. It is up to the developer to handle this event.
+		 */
+		public function set hasCloseButton(value:Boolean):void
+		{
+			_hasCloseButton = value;
+			if(_hasCloseButton)
+			{
+				_titleBar.content.addChild(_closeButton);
+			}
+			else if(_titleBar.content.contains(_closeButton))
+			{
+				_titleBar.content.removeChild(_closeButton);
+			}
+			invalidate();
+		}
+		public function get hasCloseButton():Boolean
+		{
+			return _hasCloseButton;
+		}
+
+		/**
+		 * Returns a reference to the title bar for customization.
+		 */
+		public function get titleBar():Panel
+		{
+			return _titleBar;
+		}
+		public function set titleBar(value:Panel):void
+		{
+			_titleBar = value;
+		}
+
+		/**
+		 * Returns a reference to the shape showing the grips on the title bar. Can be used to do custom drawing or turn them invisible.
+		 */		
+		public function get grips():Shape
+		{
+			return _grips;
+		}
+
+
 	}
 }

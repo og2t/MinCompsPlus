@@ -92,7 +92,7 @@ package com.bit101.components
 			_label = new Label();
 			addChild(_label);
 			
-			addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+			addEventListener(MouseEvent.MOUSE_DOWN, onMouseGoDown);
 			addEventListener(MouseEvent.ROLL_OVER, onMouseOver);
 		}
 		
@@ -170,18 +170,18 @@ package com.bit101.components
 		 * Internal mouseOut handler.
 		 * @param event The MouseEvent passed by the system.
 		 */
-		protected function onMouseDown(event:MouseEvent):void
+		protected function onMouseGoDown(event:MouseEvent):void
 		{
 			_down = true;
 			_face.filters = [getShadow(1, true)];
-			stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+			stage.addEventListener(MouseEvent.MOUSE_UP, onMouseGoUp);
 		}
 		
 		/**
 		 * Internal mouseUp handler.
 		 * @param event The MouseEvent passed by the system.
 		 */
-		protected function onMouseUp(event:MouseEvent):void
+		protected function onMouseGoUp(event:MouseEvent):void
 		{
 			if(_toggle  && _over)
 			{
@@ -189,7 +189,7 @@ package com.bit101.components
 			}
 			_down = _selected;
 			_face.filters = [getShadow(1, _selected)];
-			stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+			stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseGoUp);
 		}
 		
 		

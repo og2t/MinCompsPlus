@@ -43,15 +43,15 @@ package com.bit101.components
 
 	public class Component extends Sprite
 	{
-		// Og2t:
 		// NOTE: Flex 4 introduces DefineFont4, which is used by default and does not work in native text fields.
 		// Use the embedAsCFF="false" param to switch back to DefineFont4. In earlier Flex 4 SDKs this was cff="false".
 		// So if you are using the Flex 3.x sdk compiler, switch the embed statment below to expose the correct version.
-
+		
 		// Flex 4.x sdk:
 		[Embed(source="/assets/pf_ronda_seven.ttf", embedAsCFF="false", fontName="PF Ronda Seven", mimeType="application/x-font")]
-		/*[Embed(source="/assets/pf_ronda_seven.ttf", fontName="PF Ronda Seven", mimeType="application/x-font")]*/
-		private var Ronda:Class;
+		// Flex 3.x sdk:
+//		[Embed(source="/assets/pf_ronda_seven.ttf", fontName="PF Ronda Seven", mimeType="application/x-font")]
+		protected var Ronda:Class;
 		
 		protected var _width:Number = 0;
 		protected var _height:Number = 0;
@@ -245,6 +245,7 @@ package com.bit101.components
 		{
 			_enabled = value;
 			mouseEnabled = mouseChildren = _enabled;
+            tabEnabled = value;
 			alpha = _enabled ? 1.0 : 0.5;
 		}
 		public function get enabled():Boolean

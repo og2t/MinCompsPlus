@@ -41,13 +41,13 @@ package com.bit101.components
 		public static const ROMAN:String = "roman";
 		
 		
-		private var _label:Label;
-		private var _labelText:String = "";
-		private var _knob:Sprite;
-		private var _numChoices:int = 2;
-		private var _choice:Number = 0;
-		private var _labels:Sprite;
-		private var _labelMode:String = ALPHABETIC;
+		protected var _label:Label;
+		protected var _labelText:String = "";
+		protected var _knob:Sprite;
+		protected var _numChoices:int = 2;
+		protected var _choice:Number = 0;
+		protected var _labels:Sprite;
+		protected var _labelMode:String = ALPHABETIC;
 		
 		
 		/**

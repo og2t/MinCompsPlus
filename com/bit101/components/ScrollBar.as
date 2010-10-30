@@ -29,15 +29,29 @@
 package com.bit101.components
 {
 	import flash.display.DisplayObjectContainer;
+	import flash.display.Shape;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
 
 	public class ScrollBar extends Component
 	{
+		protected const DELAY_TIME:int = 500;
+		protected const REPEAT_TIME:int = 100; 
+		protected const UP:String = "up";
+		protected const DOWN:String = "down";
+
+        protected var _autoHide:Boolean = false;
 		protected var _upButton:PushButton;
 		protected var _downButton:PushButton;
 		protected var _scrollSlider:ScrollSlider;
 		protected var _orientation:String;
+		protected var _lineSize:int = 1;
+		protected var _delayTimer:Timer;
+		protected var _repeatTimer:Timer;
+		protected var _direction:String;
+		protected var _shouldRepeat:Boolean = false;
 		
 		/**
 		 * Constructor
@@ -63,12 +77,53 @@ package com.bit101.components
 		override protected function addChildren():void
 		{
 			_scrollSlider = new ScrollSlider(_orientation, this, 0, 10, onChange);
-			_upButton = new PushButton(this, 0, 0, "", onUpClick);
+			_upButton = new PushButton(this, 0, 0, "");
+			_upButton.addEventListener(MouseEvent.MOUSE_DOWN, onUpClick);
 			_upButton.setSize(10, 10);
-			_downButton = new PushButton(this, 0, 0, "", onDownClick);
+			var upArrow:Shape = new Shape();
+			_upButton.addChild(upArrow);
+			
+			_downButton = new PushButton(this, 0, 0, "");
+			_downButton.addEventListener(MouseEvent.MOUSE_DOWN, onDownClick);
 			_downButton.setSize(10, 10);
+			var downArrow:Shape = new Shape();
+			_downButton.addChild(downArrow);
+			
+			if(_orientation == Slider.VERTICAL)
+			{
+				upArrow.graphics.beginFill(Style.DROPSHADOW, 0.5);
+				upArrow.graphics.moveTo(5, 3);
+				upArrow.graphics.lineTo(7, 6);
+				upArrow.graphics.lineTo(3, 6);
+				upArrow.graphics.endFill();
+				
+				downArrow.graphics.beginFill(Style.DROPSHADOW, 0.5);
+				downArrow.graphics.moveTo(5, 7);
+				downArrow.graphics.lineTo(7, 4);
+				downArrow.graphics.lineTo(3, 4);
+				downArrow.graphics.endFill();
+			}
+			else
+			{
+				upArrow.graphics.beginFill(Style.DROPSHADOW, 0.5);
+				upArrow.graphics.moveTo(3, 5);
+				upArrow.graphics.lineTo(6, 7);
+				upArrow.graphics.lineTo(6, 3);
+				upArrow.graphics.endFill();
+				
+				downArrow.graphics.beginFill(Style.DROPSHADOW, 0.5);
+				downArrow.graphics.moveTo(7, 5);
+				downArrow.graphics.lineTo(4, 7);
+				downArrow.graphics.lineTo(4, 3);
+				downArrow.graphics.endFill();
+			}
+
+			
 		}
 		
+		/**
+		 * Initializes the component.
+		 */
 		protected override function init():void
 		{
 			super.init();
@@ -80,6 +135,10 @@ package com.bit101.components
 			{
 				setSize(10, 100);
 			}
+			_delayTimer = new Timer(DELAY_TIME, 1);
+			_delayTimer.addEventListener(TimerEvent.TIMER_COMPLETE, onDelayComplete);
+			_repeatTimer = new Timer(REPEAT_TIME);
+			_repeatTimer.addEventListener(TimerEvent.TIMER, onRepeat);
 		}
 		
 		
@@ -131,6 +190,15 @@ package com.bit101.components
 				_downButton.x = _width - 10;
 				_downButton.y = 0;
 			}
+			_scrollSlider.draw();
+            if(_autoHide)
+            {
+                visible = _scrollSlider.thumbPercent < 1.0;
+            }
+            else
+            {
+                visible = true;
+            }
 		}
 
 		
@@ -140,7 +208,20 @@ package com.bit101.components
 		///////////////////////////////////
 		// getter/setters
 		///////////////////////////////////
-		
+
+        /**
+         * Sets / gets whether the scrollbar will auto hide when there is nothing to scroll.
+         */
+        public function set autoHide(value:Boolean):void
+        {
+            _autoHide = value;
+            invalidate();
+        }
+        public function get autoHide():Boolean
+        {
+            return _autoHide;
+        }
+
 		/**
 		 * Sets / gets the current value of this scroll bar.
 		 */
@@ -153,6 +234,56 @@ package com.bit101.components
 			return _scrollSlider.value;
 		}
 		
+		/**
+		 * Sets / gets the minimum value of this scroll bar.
+		 */
+		public function set minimum(v:Number):void
+		{
+			_scrollSlider.minimum = v;
+		}
+		public function get minimum():Number
+		{
+			return _scrollSlider.minimum;
+		}
+		
+		/**
+		 * Sets / gets the maximum value of this scroll bar.
+		 */
+		public function set maximum(v:Number):void
+		{
+			_scrollSlider.maximum = v;
+		}
+		public function get maximum():Number
+		{
+			return _scrollSlider.maximum;
+		}
+		
+		/**
+		 * Sets / gets the amount the value will change when up or down buttons are pressed.
+		 */
+		public function set lineSize(value:int):void
+		{
+			_lineSize = value;
+		}
+		public function get lineSize():int
+		{
+			return _lineSize;
+		}
+		
+		/**
+		 * Sets / gets the amount the value will change when the back is clicked.
+		 */
+		public function set pageSize(value:int):void
+		{
+			_scrollSlider.pageSize = value;
+			invalidate();
+		}
+		public function get pageSize():int
+		{
+			return _scrollSlider.pageSize;
+		}
+		
+
 		
 		
 		
@@ -163,20 +294,69 @@ package com.bit101.components
 		
 		protected function onUpClick(event:MouseEvent):void
 		{
-			_scrollSlider.value--;
+			goUp();
+			_shouldRepeat = true;
+			_direction = UP;
+			_delayTimer.start();
+			stage.addEventListener(MouseEvent.MOUSE_UP, onMouseGoUp);
+		}
+				
+		protected function goUp():void
+		{
+			_scrollSlider.value -= _lineSize;
 			dispatchEvent(new Event(Event.CHANGE));
 		}
 		
 		protected function onDownClick(event:MouseEvent):void
 		{
-			_scrollSlider.value++;
+			goDown();
+			_shouldRepeat = true;
+			_direction = DOWN;
+			_delayTimer.start();
+			stage.addEventListener(MouseEvent.MOUSE_UP, onMouseGoUp);
+		}
+		
+		protected function goDown():void
+		{
+			_scrollSlider.value += _lineSize;
 			dispatchEvent(new Event(Event.CHANGE));
+		}
+		
+		protected function onMouseGoUp(event:MouseEvent):void
+		{
+			_delayTimer.stop();
+			_repeatTimer.stop();
+			_shouldRepeat = false;
 		}
 		
 		protected function onChange(event:Event):void
 		{
 			dispatchEvent(event);
 		}
+		
+		protected function onDelayComplete(event:TimerEvent):void
+		{
+			if(_shouldRepeat)
+			{
+				_repeatTimer.start();
+			}
+		}
+		
+		protected function onRepeat(event:TimerEvent):void
+		{
+			if(_direction == UP)
+			{
+				goUp();
+			}
+			else
+			{
+				goDown();
+			}
+		}
+		
+
+
+
 	}
 }
 
@@ -186,8 +366,8 @@ import flash.display.DisplayObjectContainer;
 import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.geom.Rectangle;
-import com.bit101.components.Style;
 import com.bit101.components.Slider;
+import com.bit101.components.Style;
 
 /**
  * Helper class for the slider portion of the scroll bar.
@@ -195,6 +375,7 @@ import com.bit101.components.Slider;
 class ScrollSlider extends Slider
 {
 	protected var _thumbPercent:Number = 1.0;
+	protected var _pageSize:int = 1;
 	
 	/**
 	 * Constructor
@@ -228,23 +409,27 @@ class ScrollSlider extends Slider
 	 */
 	override protected function drawHandle() : void
 	{
+		var size:Number;
 		_handle.graphics.clear();
 		if(_orientation == HORIZONTAL)
 		{
+			size = Math.round(_width * _thumbPercent);
+			size = Math.max(_height, size);
 			_handle.graphics.beginFill(0, 0);
-			_handle.graphics.drawRect(0, 0, _width * _thumbPercent, _height);
+			_handle.graphics.drawRect(0, 0, size, _height);
 			_handle.graphics.endFill();
 			_handle.graphics.beginFill(Style.BUTTON_FACE);
-			_handle.graphics.drawRect(1, 1, _width * _thumbPercent - 2, _height - 2);
-			
+			_handle.graphics.drawRect(1, 1, size - 2, _height - 2);
 		}
 		else
 		{
+			size = Math.round(_height * _thumbPercent);
+			size = Math.max(_width, size);
 			_handle.graphics.beginFill(0, 0);
-			_handle.graphics.drawRect(0, 0, _width  - 2, _height * _thumbPercent);
+			_handle.graphics.drawRect(0, 0, _width  - 2, size);
 			_handle.graphics.endFill();
 			_handle.graphics.beginFill(Style.BUTTON_FACE);
-			_handle.graphics.drawRect(1, 1, _width - 2, _height * _thumbPercent - 2);
+			_handle.graphics.drawRect(1, 1, _width - 2, size - 2);
 		}
 		_handle.graphics.endFill();
 		positionHandle();
@@ -280,15 +465,7 @@ class ScrollSlider extends Slider
 	 */
 	public function setThumbPercent(value:Number):void
 	{
-		_thumbPercent = value;
-		if(_orientation == HORIZONTAL && _thumbPercent * _width < _height)
-		{
-			_thumbPercent = _height / _width;
-		}
-		else if(_orientation == VERTICAL && _thumbPercent * _height < _width)
-		{
-			_thumbPercent = _width / _height;
-		}
+		_thumbPercent = Math.min(value, 1.0);
 		invalidate();
 	}
 	
@@ -310,29 +487,57 @@ class ScrollSlider extends Slider
 		{
 			if(mouseX < _handle.x)
 			{
-				_handle.x -= (_handle.width - 0);
+				if(_max > _min)
+				{
+					_value -= _pageSize;
+				}
+				else
+				{
+					_value += _pageSize;
+				}
+				correctValue();
 			}
 			else
 			{
-				_handle.x += (_handle.width - 0);
+				if(_max > _min)
+				{
+					_value += _pageSize;
+				}
+				else
+				{
+					_value -= _pageSize;
+				}
+				correctValue();
 			}
-			_handle.x = Math.max(_handle.x, 0);
-			_handle.x = Math.min(_handle.x, width - _handle.width);
-			_value = _handle.x / (width - _handle.width) * (_max - _min) + _min;
+			positionHandle();
 		}
 		else
 		{
 			if(mouseY < _handle.y)
 			{
-				_handle.y -= (_handle.height - 2);
+				if(_max > _min)
+				{
+					_value -= _pageSize;
+				}
+				else
+				{
+					_value += _pageSize;
+				}
+				correctValue();
 			}
 			else
 			{
-				_handle.y += (_handle.height - 2);
+				if(_max > _min)
+				{
+					_value += _pageSize;
+				}
+				else
+				{
+					_value -= _pageSize;
+				}
+				correctValue();
 			}
-			_handle.y = Math.max(_handle.y, 0);
-			_handle.y = Math.min(_handle.y, height - _handle.height);
-			_value = _handle.y / (height - _handle.height) * (_max - _min) + _min;
+			positionHandle();
 		}
 		dispatchEvent(new Event(Event.CHANGE));
 		
@@ -348,11 +553,11 @@ class ScrollSlider extends Slider
 		stage.addEventListener(MouseEvent.MOUSE_MOVE, onSlide);
 		if(_orientation == HORIZONTAL)
 		{
-			_handle.startDrag(false, new Rectangle(0, 0, width - width * _thumbPercent, 0));
+			_handle.startDrag(false, new Rectangle(0, 0, _width - _handle.width, 0));
 		}
 		else
 		{
-			_handle.startDrag(false, new Rectangle(0, 0, 0, height - height * _thumbPercent));
+			_handle.startDrag(false, new Rectangle(0, 0, 0, _height - _handle.height));
 		}
 	}
 	
@@ -365,11 +570,25 @@ class ScrollSlider extends Slider
 		var oldValue:Number = _value;
 		if(_orientation == HORIZONTAL)
 		{
-			_value = _handle.x / (width - _width * _thumbPercent) * (_max - _min) + _min;
+			if(_width == _handle.width)
+			{
+				_value = _min;
+			}
+			else
+			{
+				_value = _handle.x / (_width - _handle.width) * (_max - _min) + _min;
+			}
 		}
 		else
 		{
-			_value = _handle.y / (height - height * _thumbPercent) * (_max - _min) + _min;
+			if(_height == _handle.height)
+			{
+				_value = _min;
+			}
+			else
+			{
+				_value = _handle.y / (_height - _handle.height) * (_max - _min) + _min;
+			}
 		}
 		if(_value != oldValue)
 		{
@@ -377,4 +596,29 @@ class ScrollSlider extends Slider
 		}
 	}
 	
+	
+	
+	
+	
+	///////////////////////////////////
+	// getter/setters
+	///////////////////////////////////
+		
+	/**
+	 * Sets / gets the amount the value will change when the back is clicked.
+	 */
+	public function set pageSize(value:int):void
+	{
+		_pageSize = value;
+		invalidate();
+	}
+	public function get pageSize():int
+	{
+		return _pageSize;
+	}
+
+    public function get thumbPercent():Number
+    {
+        return _thumbPercent;
+    }
 }

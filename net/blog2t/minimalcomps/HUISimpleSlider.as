@@ -88,11 +88,11 @@ package net.blog2t.minimalcomps
 			_label.draw();
 			formatValueLabel();
 			
-			_slider.x = _label.width + 5;
+			_slider.x = 0;
 			_slider.y = _slider.height / 2 - 1;
 			_slider.width = width - _label.width - 50 - 10;
-
 			_valueLabel.x = _slider.x + _slider.width + 5;
+			_label.x = _valueLabel.x + _valueLabel.width + 10;
 		}
 		
 		/**

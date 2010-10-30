@@ -30,6 +30,7 @@ package com.bit101.components
 {
 	import flash.display.DisplayObjectContainer;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 	
 	public class TextArea extends Text
 	{
@@ -47,6 +48,14 @@ package com.bit101.components
 			super(parent, xpos, ypos, text);
 		}
 		
+		/**
+		 * Initilizes the component.
+		 */
+		protected override function init() : void
+		{
+			super.init();
+			addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel);
+		}
 		/**
 		 * Creates and adds the child display objects of this component.
 		 */
@@ -66,6 +75,7 @@ package com.bit101.components
 			var percent:Number = visibleLines / _tf.numLines;
 			_scrollbar.setSliderParams(1, _tf.maxScrollV, _tf.scrollV);
 			_scrollbar.setThumbPercent(percent);
+			_scrollbar.pageSize = visibleLines;
 		}
 		
 		
@@ -85,6 +95,7 @@ package com.bit101.components
 			_tf.width = _width - _scrollbar.width - 4;
 			_scrollbar.x = _width - _scrollbar.width;
 			_scrollbar.height = _height;
+			_scrollbar.draw();
 			addEventListener(Event.ENTER_FRAME, onTextScrollDelay);
 		}
 		
@@ -129,5 +140,35 @@ package com.bit101.components
 			_scrollbar.value = _tf.scrollV;
 			updateScrollbar();
 		}
+		
+		/**
+		 * Called when the mouse wheel is scrolled over the component.
+		 */
+		protected function onMouseWheel(event:MouseEvent):void
+		{
+			_scrollbar.value -= event.delta;
+		}
+
+        /**
+         * Sets/gets whether this component is enabled or not.
+         */
+        public override function set enabled(value:Boolean):void
+        {
+            super.enabled = value;
+            _tf.tabEnabled = value;
+        }
+
+        /**
+         * Sets / gets whether the scrollbar will auto hide when there is nothing to scroll.
+         */
+        public function set autoHideScrollBar(value:Boolean):void
+        {
+            _scrollbar.autoHide = value;
+        }
+        public function get autoHideScrollBar():Boolean
+        {
+            return _scrollbar.autoHide;
+        }
+
 	}
 }

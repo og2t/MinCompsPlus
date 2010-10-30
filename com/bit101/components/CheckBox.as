@@ -34,11 +34,11 @@ package com.bit101.components
 	
 	public class CheckBox extends Component
 	{
-		private var _back:Sprite;
-		private var _button:Sprite;
-		private var _label:Label;
-		private var _labelText:String = "";
-		private var _selected:Boolean = false;
+		protected var _back:Sprite;
+		protected var _button:Sprite;
+		protected var _label:Label;
+		protected var _labelText:String = "";
+		protected var _selected:Boolean = false;
 		
 		
 		/**

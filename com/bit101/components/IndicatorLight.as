@@ -37,12 +37,12 @@ package com.bit101.components
 	
 	public class IndicatorLight extends Component
 	{
-		private var _color:uint;
-		private var _lit:Boolean = false;
-		private var _label:Label;
-		private var _labelText:String = "";
-		private var _lite:Shape;
-		private var _timer:Timer;
+		protected var _color:uint;
+		protected var _lit:Boolean = false;
+		protected var _label:Label;
+		protected var _labelText:String = "";
+		protected var _lite:Shape;
+		protected var _timer:Timer;
 		
 		
 		

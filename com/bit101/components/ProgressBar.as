@@ -33,7 +33,6 @@ package com.bit101.components
 	
 	public class ProgressBar extends Component
 	{
-		// Og2t: _back, _bar, _value, _max changed to protected
 		protected var _back:Sprite;
 		protected var _bar:Sprite;
 		protected var _value:Number = 0;

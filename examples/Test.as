@@ -24,6 +24,8 @@ package
 		private var myRadioButton3:RadioButton;
 		private var myRadioButton4:RadioButton;
 		
+		private var comboBox:ComboBox;
+		
 		private var panel1:Panel;
 		private var panel2:Panel;
 		
@@ -55,6 +57,8 @@ package
 			myRadioButton2 = new RadioButton(panel1, 10, 40, "RadioButton");
 			myRadioButton3 = new RadioButton(panel2, 10, 20, "RadioButton");
 			myRadioButton4 = new RadioButton(panel2, 10, 40, "RadioButton");
+			
+			comboBox = new ComboBox(this, 350, 250);
 		}
 	}
 }

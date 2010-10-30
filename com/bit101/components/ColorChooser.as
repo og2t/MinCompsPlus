@@ -51,18 +51,18 @@ package com.bit101.components
 		public static const TOP:String = "top";
 		public static const BOTTOM:String = "bottom";
 		
-		private var _colors:BitmapData;
-		private var _colorsContainer:Sprite;
-		private var _defaultModelColors:Array=[0xFF0000, 0xFFFF00, 0x00FF00, 0x00FFFF, 0x0000FF, 0xFF00FF, 0xFF0000,0xFFFFFF,0x000000];
-		private var _input:InputText;
-		private var _model:DisplayObject;
-		private var _oldColorChoice:uint = _value;
-		private var _popupAlign:String = BOTTOM;
-		private var _stage:Stage;
-		private var _swatch:Sprite;
-		private var _tmpColorChoice:uint = _value;
-		private var _usePopup:Boolean = false;
-		private var _value:uint = 0xff0000;
+		protected var _colors:BitmapData;
+		protected var _colorsContainer:Sprite;
+		protected var _defaultModelColors:Array=[0xFF0000, 0xFFFF00, 0x00FF00, 0x00FFFF, 0x0000FF, 0xFF00FF, 0xFF0000,0xFFFFFF,0x000000];
+		protected var _input:InputText;
+		protected var _model:DisplayObject;
+		protected var _oldColorChoice:uint = _value;
+		protected var _popupAlign:String = BOTTOM;
+		protected var _stage:Stage;
+		protected var _swatch:Sprite;
+		protected var _tmpColorChoice:uint = _value;
+		protected var _usePopup:Boolean = false;
+		protected var _value:uint = 0xff0000;
 		
 		
 		/**
@@ -198,7 +198,7 @@ package com.bit101.components
 			}
 		}
 		
-		private function drawColors(d:DisplayObject):void{
+		protected function drawColors(d:DisplayObject):void{
 			_colors = new BitmapData(d.width, d.height);
 			_colors.draw(d);
 			while (_colorsContainer.numChildren) _colorsContainer.removeChildAt(0);
@@ -237,39 +237,39 @@ package com.bit101.components
 		 * The color picker mode Handlers 
 		 */
 		
-		private function onColorsRemovedFromStage(e:Event):void {
+		protected function onColorsRemovedFromStage(e:Event):void {
 			_stage.removeEventListener(MouseEvent.CLICK, onStageClick);
 		}
 		
-		private function onColorsAddedToStage(e:Event):void {
+		protected function onColorsAddedToStage(e:Event):void {
 			_stage = stage;
 			_stage.addEventListener(MouseEvent.CLICK, onStageClick);
 		}
 		
-		private function onStageClick(e:MouseEvent):void {
+		protected function onStageClick(e:MouseEvent):void {
 			displayColors();
 		}
 		 
 		
-		private function onSwatchClick(event:MouseEvent):void 
+		protected function onSwatchClick(event:MouseEvent):void 
 		{
 			event.stopImmediatePropagation();
 			displayColors();
 		}
 		
-		private function backToColorChoice(e:MouseEvent):void 
+		protected function backToColorChoice(e:MouseEvent):void 
 		{
 			value = _oldColorChoice;
 		}
 		
-		private function setColorChoice(e:MouseEvent):void {
+		protected function setColorChoice(e:MouseEvent):void {
 			value = _colors.getPixel(_colorsContainer.mouseX, _colorsContainer.mouseY);
 			_oldColorChoice = value;
 			dispatchEvent(new Event(Event.CHANGE));
 			displayColors();
 		}
 		
-		private function browseColorChoice(e:MouseEvent):void 
+		protected function browseColorChoice(e:MouseEvent):void 
 		{
 			_tmpColorChoice = _colors.getPixel(_colorsContainer.mouseX, _colorsContainer.mouseY);
 			value = _tmpColorChoice;
@@ -279,14 +279,14 @@ package com.bit101.components
 		 * The color picker mode Display functions
 		 */
 		
-		private function displayColors():void 
+		protected function displayColors():void 
 		{
 			placeColors();
 			if (_colorsContainer.parent) _colorsContainer.parent.removeChild(_colorsContainer);
 			else stage.addChild(_colorsContainer);
 		}		
 		
-		private function placeColors():void{
+		protected function placeColors():void{
 			var point:Point = new Point(x, y);
 			if(parent) point = parent.localToGlobal(point);
 			switch (_popupAlign)
@@ -310,7 +310,7 @@ package com.bit101.components
 		 * Create the default gradient Model
 		 */
 
-		private function getDefaultModel():Sprite {	
+		protected function getDefaultModel():Sprite {	
 			var w:Number = 100;
 			var h:Number = 100;
 			var bmd:BitmapData = new BitmapData(w, h);
@@ -336,9 +336,8 @@ package com.bit101.components
 			return(s);
 		}
 		
-		private function getGradientSprite(w:Number, h:Number, ca:Array):Sprite 
+		protected function getGradientSprite(w:Number, h:Number, gc:Array):Sprite 
 		{
-			var gc:Array = ca;
 			var gs:Sprite = new Sprite();
 			var g:Graphics = gs.graphics;
 			var gn:int = gc.length;

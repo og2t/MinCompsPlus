@@ -29,15 +29,15 @@
 package com.bit101.components
 {
 	import flash.display.DisplayObjectContainer;
+	import flash.events.Event;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 	
 	public class Label extends Component
 	{
-		private var _autoSize:Boolean = true;
-		private var _text:String = "";
-		// Og2t: _tf changed to protected
+		protected var _autoSize:Boolean = true;
+		protected var _text:String = "";
 		protected var _tf:TextField;
 		
 		/**
@@ -49,7 +49,7 @@ package com.bit101.components
 		 */
 		public function Label(parent:DisplayObjectContainer = null, xpos:Number = 0, ypos:Number =  0, text:String = "")
 		{
-			_text = text;
+			this.text = text;
 			super(parent, xpos, ypos);
 		}
 		
@@ -71,10 +71,10 @@ package com.bit101.components
 			_height = 18;
 			_tf = new TextField();
 			_tf.height = _height;
-			_tf.embedFonts = true;
+			_tf.embedFonts = Style.embedFonts;
 			_tf.selectable = false;
 			_tf.mouseEnabled = false;
-			_tf.defaultTextFormat = new TextFormat("PF Ronda Seven", 8, Style.LABEL_TEXT);
+			_tf.defaultTextFormat = new TextFormat(Style.fontName, Style.fontSize, Style.LABEL_TEXT);
 			_tf.text = _text;			
 			addChild(_tf);
 			draw();
@@ -98,6 +98,7 @@ package com.bit101.components
 			{
 				_tf.autoSize = TextFieldAutoSize.LEFT;
 				_width = _tf.width;
+				dispatchEvent(new Event(Event.RESIZE));
 			}
 			else
 			{
@@ -121,6 +122,7 @@ package com.bit101.components
 		public function set text(t:String):void
 		{
 			_text = t;
+			if(_text == null) _text = "";
 			invalidate();
 		}
 		public function get text():String
@@ -138,6 +140,14 @@ package com.bit101.components
 		public function get autoSize():Boolean
 		{
 			return _autoSize;
+		}
+		
+		/**
+		 * Gets the internal TextField of the label if you need to do further customization of it.
+		 */
+		public function get textField():TextField
+		{
+			return _tf;
 		}
 	}
 }

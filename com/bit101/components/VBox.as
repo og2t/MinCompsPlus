@@ -29,13 +29,13 @@
  
 package com.bit101.components
 {
-	import flash.display.DisplayObject;
+    import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.events.Event;
 
 	public class VBox extends Component
 	{
-		private var _spacing:Number = 5;
+		protected var _spacing:Number = 5;
 		
 		
 		/**
@@ -52,14 +52,36 @@ package com.bit101.components
 		/**
 		 * Override of addChild to force layout;
 		 */
-		override public function addChild(child:DisplayObject) : DisplayObject
+		override public function addChildAt(child:DisplayObject, index:int) : DisplayObject
 		{
-			super.addChild(child);
+			super.addChildAt(child, index);
 			child.addEventListener(Event.RESIZE, onResize);
 			invalidate();
 			return child;
 		}
+
+        /**
+         * Override of removeChild to force layout;
+         */
+        override public function removeChild(child:DisplayObject):DisplayObject
+        {
+            super.removeChild(child);            
+            child.removeEventListener(Event.RESIZE, onResize);
+            invalidate();
+            return child;
+        }
 		
+        /**
+         * Override of removeChild to force layout;
+         */
+        override public function removeChildAt(index:int):DisplayObject
+        {
+            var child:DisplayObject = super.removeChildAt(index);
+            child.removeEventListener(Event.RESIZE, onResize);
+            invalidate();
+            return child;
+        }
+
 		/**
 		 * Internal handler for resize event of any attached component. Will redo the layout based on new size.
 		 */
@@ -73,6 +95,8 @@ package com.bit101.components
 		 */
 		override public function draw() : void
 		{
+			_width = 0;
+			_height = 0;
 			var ypos:Number = 0;
 			for(var i:int = 0; i < numChildren; i++)
 			{
@@ -80,7 +104,11 @@ package com.bit101.components
 				child.y = ypos;
 				ypos += child.height;
 				ypos += _spacing;
+				_height += child.height;
+				_width = Math.max(_width, child.width);
 			}
+			_height += _spacing * (numChildren - 1);
+			dispatchEvent(new Event(Event.RESIZE));
 		}
 		
 		/**
